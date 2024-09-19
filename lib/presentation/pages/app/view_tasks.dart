@@ -1,3 +1,5 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mytodo_bloc/presentation/bloc/app/app_bloc.dart';
@@ -8,6 +10,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../widgets/slideable.dart';
 import '../../widgets/text.dart';
 
+
+@RoutePage()
 class ViewTasks extends StatelessWidget {
   final String page;
 
@@ -21,7 +25,7 @@ class ViewTasks extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             appBar: MyAppBar(
-              title: page == 'completed' ? 'Completed Tasks' : 'Deleted Tasks',
+              title: page == 'completed' ? 'completed tasks'.tr() : 'deleted tasks'.tr(),
               leadingExists: false,
             ),
             body: Builder(
@@ -63,8 +67,8 @@ class ViewTasks extends StatelessWidget {
                     return Center(
                       child: MyText(
                         text: page == 'completed'
-                            ? 'You have no completed tasks.'
-                            : 'You have no deleted tasks.',
+                            ? 'you have no completed tasks.'
+                            : 'you have no deleted tasks.',
                       ),
                     );
                   }
@@ -72,8 +76,8 @@ class ViewTasks extends StatelessWidget {
                     return Center(
                       child: MyText(
                         text: page == 'completed'
-                            ? 'You have no completed tasks.'
-                            : 'You have no deleted tasks.',
+                            ? 'you have no completed tasks.'
+                            : 'you have no deleted tasks.',
                       ),
                     );
                   }
@@ -116,7 +120,7 @@ class ViewTasks extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: MyText(text: 'Error fetching tasks.'),
+                    child: MyText(text: 'error fetching tasks.'),
                   );
                 }
               },

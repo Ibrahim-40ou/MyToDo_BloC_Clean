@@ -115,3 +115,9 @@ class ThemeChanged extends AppState {
 
   ThemeChanged({required this.isDarkMode});
 }
+
+class LanguageChanged extends AppState {
+  final bool isArabic;
+
+  LanguageChanged({required this.isArabic});
+}

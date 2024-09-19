@@ -1,14 +1,15 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mytodo_bloc/core/common_functions.dart';
+import 'package:mytodo_bloc/core/routes.dart';
 import 'package:mytodo_bloc/presentation/bloc/app/app_bloc.dart';
-import 'package:mytodo_bloc/presentation/pages/app/view_task.dart';
 import 'package:mytodo_bloc/presentation/widgets/app_bar.dart';
 import 'package:mytodo_bloc/presentation/widgets/slideable.dart';
 import 'package:mytodo_bloc/presentation/widgets/text.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'add_task.dart';
 
 class Tasks extends StatelessWidget {
   const Tasks({super.key});
@@ -17,12 +18,20 @@ class Tasks extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<AppBloc>(context).add(FetchTasks());
     return BlocConsumer<AppBloc, AppState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ChangeTaskPriorityFailure) {
+          Common().showSnackBar(context, state.message);
+        }
+        if (state is ChangeTaskStatusFailure) {
+          Common().showSnackBar(context, state.message);
+        }
+      },
       builder: (context, state) {
+        bool isArabic = Localizations.localeOf(context).toString() == 'en_US' ? false : true;
         return SafeArea(
           child: Scaffold(
-            appBar: const MyAppBar(
-              title: 'Tasks',
+            appBar: MyAppBar(
+              title: 'tasks'.tr(),
               leadingExists: false,
             ),
             body: Builder(
@@ -33,7 +42,7 @@ class Tasks extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         title: Align(
-                          alignment: Alignment.centerLeft,
+                          alignment: isArabic ? Alignment.centerRight : Alignment.centerLeft,
                           child: Shimmer.fromColors(
                             baseColor: const Color(0xFFCCCCCC),
                             highlightColor: Colors.white,
@@ -64,12 +73,12 @@ class Tasks extends StatelessWidget {
                       .isEmpty;
                   if (state.tasks.isEmpty) {
                     return const Center(
-                      child: MyText(text: 'You have no tasks.'),
+                      child: MyText(text: 'you have no tasks.'),
                     );
                   }
                   if (noTasks) {
                     return const Center(
-                      child: MyText(text: 'You have no pending tasks'),
+                      child: MyText(text: 'you have no pending tasks.'),
                     );
                   }
                   return ListView.builder(
@@ -80,13 +89,10 @@ class Tasks extends StatelessWidget {
                         return TaskListTile(
                           task: state.tasks[index],
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewTask(
-                                  task: state.tasks[index],
-                                  editingMode: true,
-                                ),
+                            context.router.push(
+                              ViewTask(
+                                task: state.tasks[index],
+                                editingMode: true,
                               ),
                             );
                           },
@@ -125,19 +131,14 @@ class Tasks extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: MyText(text: 'Error fetching tasks.'),
+                    child: MyText(text: 'error fetching tasks.'),
                   );
                 }
               },
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddTaskPage(),
-                  ),
-                );
+                context.router.push(const AddATask());
               },
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: const Icon(

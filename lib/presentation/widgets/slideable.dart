@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo_bloc/domain/entities/task_entity.dart';
 import 'package:mytodo_bloc/presentation/widgets/text.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 
 class TaskListTile extends StatelessWidget {
   final TaskEntity task;
@@ -129,6 +129,7 @@ class TaskListTile extends StatelessWidget {
                   color: isContained
                       ? Colors.white
                       : Theme.of(context).textTheme.bodyMedium!.color!,
+                  maxLines: 1,
                 ),
               ),
               MyText(
@@ -138,6 +139,7 @@ class TaskListTile extends StatelessWidget {
                 color: isContained
                     ? Colors.white
                     : Theme.of(context).textTheme.labelMedium!.color!,
+                maxLines: 1,
               ),
             ],
           ),
@@ -148,6 +150,7 @@ class TaskListTile extends StatelessWidget {
             color: isContained
                 ? Colors.white
                 : Theme.of(context).textTheme.bodyMedium!.color!,
+            maxLines: 1,
           ),
           tileColor: isContained ? Theme.of(context).colorScheme.primary : null,
         ),

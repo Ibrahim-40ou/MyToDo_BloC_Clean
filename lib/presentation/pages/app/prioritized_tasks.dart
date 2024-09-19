@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mytodo_bloc/presentation/bloc/app/app_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../widgets/slideable.dart';
 import '../../widgets/text.dart';
 
+
+// @RoutePage()
 class PrioritizedTasks extends StatelessWidget {
   const PrioritizedTasks({super.key});
 
@@ -18,8 +21,8 @@ class PrioritizedTasks extends StatelessWidget {
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
-            appBar: const MyAppBar(
-              title: 'Prioritized',
+            appBar: MyAppBar(
+              title: 'prioritized'.tr(),
               leadingExists: false,
             ),
             body: Builder(
@@ -61,12 +64,12 @@ class PrioritizedTasks extends StatelessWidget {
                       .isEmpty;
                   if (state.tasks.isEmpty) {
                     return const Center(
-                      child: MyText(text: 'You have no tasks.'),
+                      child: MyText(text: 'you have no tasks.'),
                     );
                   }
                   if (noTasks) {
                     return const Center(
-                      child: MyText(text: 'You have no prioritized tasks'),
+                      child: MyText(text: 'you have no prioritized tasks.'),
                     );
                   }
                   return ListView.builder(
@@ -122,7 +125,7 @@ class PrioritizedTasks extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: MyText(text: 'Error fetching tasks.'),
+                    child: MyText(text: 'error fetching tasks.'),
                   );
                 }
               },

@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mytodo_bloc/presentation/widgets/text_field.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 
 import '../../../core/common_functions.dart';
 import '../../bloc/auth/auth_bloc.dart';
@@ -11,6 +13,7 @@ import '../../widgets/button.dart';
 import '../../widgets/loading_indicator.dart';
 import '../../widgets/text.dart';
 
+@RoutePage()
 class ForgotPassword extends StatelessWidget {
   final TextEditingController _email = TextEditingController();
   final _key = GlobalKey<FormState>();
@@ -27,10 +30,10 @@ class ForgotPassword extends StatelessWidget {
           Common().showDialogue(
             context,
             '',
-            'Are you sure you want to leave? All data entered will be lost.',
+            'are you sure you want to leave? all data entered will be lost.',
             () {},
             () {
-              Navigator.pop(context);
+              context.router.popForced(true);
             },
           );
         }
@@ -44,7 +47,7 @@ class ForgotPassword extends StatelessWidget {
           child: SafeArea(
             child: Scaffold(
               body: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Form(
                   key: _key,
                   child: SingleChildScrollView(
@@ -73,12 +76,12 @@ class ForgotPassword extends StatelessWidget {
                             Row(
                               children: [
                                 const MyText(
-                                  text: 'Forgot',
+                                  text: 'forgot',
                                   size: 26,
                                   weight: FontWeight.w600,
                                 ),
                                 MyText(
-                                  text: ' Password?',
+                                  text: ' password',
                                   size: 26,
                                   weight: FontWeight.w600,
                                   color: Theme.of(context).colorScheme.primary,
@@ -89,7 +92,7 @@ class ForgotPassword extends StatelessWidget {
                               width: 90.w,
                               child: MyText(
                                 text:
-                                    'Enter the email address the corresponds with your account.',
+                                    'enter the email address that corresponds with your account.',
                                 size: 14,
                                 weight: FontWeight.normal,
                                 color: isDarkMode
@@ -109,7 +112,7 @@ class ForgotPassword extends StatelessWidget {
                         const SizedBox(height: 48),
                         MyField(
                           controller: _email,
-                          labelText: 'Email',
+                          labelText: 'email'.tr(),
                           isLast: true,
                           prefixIcon: SvgPicture.asset(
                             'assets/email.svg',
@@ -150,7 +153,7 @@ class ForgotPassword extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               const MyText(
-                                text: 'Send',
+                                text: 'send',
                                 color: Colors.white,
                               ),
                             ],
@@ -162,18 +165,18 @@ class ForgotPassword extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const MyText(
-                              text: "Remembered your password?",
+                              text: "remembered your password",
                               size: 16,
                               weight: FontWeight.normal,
                             ),
                             MyButton(
                               height: 3.h,
                               function: () {
-                                Navigator.pop(context);
+                                context.router.popForced(true);
                               },
                               color: Theme.of(context).colorScheme.surface,
                               child: MyText(
-                                text: 'Sign in',
+                                text: 'sign in',
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 
 class MyField extends StatelessWidget {
   final TextEditingController controller;

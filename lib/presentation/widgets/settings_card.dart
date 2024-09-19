@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytodo_bloc/presentation/widgets/text.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 import 'button.dart';
 
 class SettingsCard extends StatelessWidget {

@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mytodo_bloc/core/common_functions.dart';
 import 'package:mytodo_bloc/data/datasources/app_remote_datasource.dart';
 import 'package:mytodo_bloc/data/repositories/app_repository_impl.dart';
 import 'package:mytodo_bloc/domain/entities/task_entity.dart';
@@ -19,7 +21,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppBloc() : super(AppInitial()) {
     on<FetchTasks>(_fetchTasks);
-    on<AddTask>(_addTask);
+    on<AddTaskEvent>(_addTask);
     on<TogglePriority>(_togglePriority);
     on<AppBackPressed>(_back);
     on<PickDateTime>(_pickDateTime);
@@ -30,14 +32,27 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<SignOutRequested>(_signOut);
     on<ChangeTheme>(_changeTheme);
     on<LoadTheme>(_loadTheme);
+    on<ChangeLanguage>(_changeLanguage);
   }
 
-  Future<void> _loadTheme(LoadTheme event, Emitter<AppState> emit) async {
+  void _changeLanguage(ChangeLanguage event, Emitter<AppState> emit) {
+    if(event.isArabic) {
+      event.context.setLocale(const Locale('ar', 'DZ'));
+      arabicCheck!.setBool('isArabic', true);
+    } else {
+      event.context.setLocale(const Locale('en', 'US'));
+      arabicCheck!.setBool('isArabic', false);
+    }
+    emit(LanguageChanged(isArabic: event.isArabic));
+    emit(FetchTasksSuccess(tasks: _tasks));
+  }
+
+  void _loadTheme(LoadTheme event, Emitter<AppState> emit) {
     emit(ThemeChanged(isDarkMode: event.isDarkMode));
     emit(FetchTasksSuccess(tasks: _tasks));
   }
 
-  Future<void> _changeTheme(ChangeTheme event, Emitter<AppState> emit) async {
+  void _changeTheme(ChangeTheme event, Emitter<AppState> emit) {
     darkModeCheck?.setBool('isDarkMode', event.isDarkMode);
     emit(ThemeChanged(isDarkMode: event.isDarkMode));
     emit(FetchTasksSuccess(tasks: _tasks));
@@ -94,7 +109,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
   }
 
-  Future<void> _addTask(AddTask event, Emitter<AppState> emit) async {
+  Future<void> _addTask(AddTaskEvent event, Emitter<AppState> emit) async {
     if (event.title.isEmpty || event.dateTime == null) {
       return emit(
         CheckTitleAndDateTimeState(
@@ -187,10 +202,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     ).call(event.task);
     response.fold(
       (failure) {
-        return emit(UpdateTaskFailure(message: failure.message));
+        print('hh1');
+        emit(UpdateTaskFailure(message: failure.message));
+        print(failure.message);
       },
       (success) {
-        return emit(UpdateTaskSuccess(task: event.task));
+        print('hh');
+        emit(UpdateTaskSuccess(task: event.task));
       },
     );
     add(FetchTasks());

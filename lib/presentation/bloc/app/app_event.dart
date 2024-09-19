@@ -7,14 +7,14 @@ class FetchTasks extends AppEvent {}
 
 class AppBackPressed extends AppEvent {}
 
-class AddTask extends AppEvent {
+class AddTaskEvent extends AppEvent {
   final String title;
   final String body;
   final bool prioritized;
   final String status;
   final DateTime? dateTime;
 
-  AddTask({
+  AddTaskEvent({
     required this.title,
     required this.body,
     required this.prioritized,
@@ -82,3 +82,13 @@ class LoadTheme extends AppEvent {
 }
 
 class FetchedTasksEvent extends AppEvent {}
+
+class ChangeLanguage extends AppEvent {
+  final bool isArabic;
+  final BuildContext context;
+
+  ChangeLanguage({
+    required this.isArabic,
+    required this.context,
+  });
+}

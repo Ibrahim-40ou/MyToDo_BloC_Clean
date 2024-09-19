@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mytodo_bloc/main.dart';
 
 class MyText extends StatelessWidget {
   final String text;
@@ -9,6 +11,7 @@ class MyText extends StatelessWidget {
   final TextAlign? align;
   final TextOverflow? overflow;
   final TextDecoration? decoration;
+  final int? maxLines;
 
   const MyText({
     super.key,
@@ -19,6 +22,7 @@ class MyText extends StatelessWidget {
     this.align,
     this.overflow,
     this.decoration,
+    this.maxLines,
   });
 
   @override
@@ -31,8 +35,12 @@ class MyText extends StatelessWidget {
         color: color ?? Theme.of(context).textTheme.bodyMedium?.color,
         decoration: decoration,
       ),
-      textAlign: align,
+      textAlign: align ??
+          (Localizations.localeOf(context).toString() == 'en_US'
+              ? TextAlign.left
+              : TextAlign.right),
       overflow: overflow,
-    );
+      maxLines: maxLines,
+    ).tr();
   }
 }

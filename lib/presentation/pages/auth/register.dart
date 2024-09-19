@@ -1,17 +1,20 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mytodo_bloc/presentation/widgets/text_field.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 
 import '../../../core/common_functions.dart';
+import '../../../core/routes.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/button.dart';
 import '../../widgets/loading_indicator.dart';
 import '../../widgets/text.dart';
-import '../app/app.dart';
 
+@RoutePage()
 class Register extends StatelessWidget {
   final TextEditingController _fullName = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -31,10 +34,10 @@ class Register extends StatelessWidget {
           Common().showDialogue(
             context,
             '',
-            'Are you sure you want to leave? All data entered will be lost.',
+            'are you sure you want to leave? all data entered will be lost.',
             () {},
             () {
-              Navigator.pop(context);
+              context.router.popForced(true);
             },
           );
         }
@@ -48,11 +51,7 @@ class Register extends StatelessWidget {
           );
         }
         if (state is RegisterSuccess || state is GoogleSignInSuccess) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => App()),
-            (route) => false,
-          );
+          context.router.push(const InitialRoute());
         }
       },
       builder: (context, state) {
@@ -68,7 +67,7 @@ class Register extends StatelessWidget {
           child: SafeArea(
             child: Scaffold(
               body: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Form(
                   key: _key,
                   child: SingleChildScrollView(
@@ -97,12 +96,12 @@ class Register extends StatelessWidget {
                             Row(
                               children: [
                                 const MyText(
-                                  text: 'Create',
+                                  text: 'create',
                                   size: 26,
                                   weight: FontWeight.w600,
                                 ),
                                 MyText(
-                                  text: ' Account',
+                                  text: ' account',
                                   size: 26,
                                   weight: FontWeight.w600,
                                   color: Theme.of(context).colorScheme.primary,
@@ -113,7 +112,7 @@ class Register extends StatelessWidget {
                               width: 90.w,
                               child: MyText(
                                 text:
-                                    'Fill all the information to create an account and use the app.',
+                                    'fill all the information to create an account and use the app.',
                                 size: 14,
                                 weight: FontWeight.normal,
                                 color: isDarkMode
@@ -133,7 +132,7 @@ class Register extends StatelessWidget {
                         const SizedBox(height: 32),
                         MyField(
                           controller: _fullName,
-                          labelText: 'Full Name',
+                          labelText: 'full name'.tr(),
                           isName: true,
                           prefixIcon: SvgPicture.asset(
                             'assets/user.svg',
@@ -150,7 +149,7 @@ class Register extends StatelessWidget {
                         const SizedBox(height: 16),
                         MyField(
                           controller: _email,
-                          labelText: 'Email',
+                          labelText: 'email'.tr(),
                           prefixIcon: SvgPicture.asset(
                             'assets/email.svg',
                             fit: BoxFit.scaleDown,
@@ -166,7 +165,7 @@ class Register extends StatelessWidget {
                         const SizedBox(height: 16),
                         MyField(
                           controller: _password,
-                          labelText: 'Password',
+                          labelText: 'password'.tr(),
                           isPassword: true,
                           showPassword: showPassword,
                           prefixIcon: SvgPicture.asset(
@@ -205,7 +204,7 @@ class Register extends StatelessWidget {
                         const SizedBox(height: 16),
                         MyField(
                           controller: _confirmPassword,
-                          labelText: 'Confirm Password',
+                          labelText: 'confirm password'.tr(),
                           isLast: true,
                           showPassword: showPassword,
                           isPassword: true,
@@ -280,7 +279,7 @@ class Register extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               const MyText(
-                                text: 'Create account',
+                                text: 'create account',
                                 color: Colors.white,
                               ),
                             ],
@@ -309,7 +308,7 @@ class Register extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               const MyText(
-                                text: 'Sign up with Google',
+                                text: 'sign up with google',
                               ),
                             ],
                           ),
@@ -320,18 +319,18 @@ class Register extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const MyText(
-                              text: "Already have an account?",
+                              text: "already have an account?",
                               size: 16,
                               weight: FontWeight.normal,
                             ),
                             MyButton(
                               height: 3.h,
                               function: () {
-                                Navigator.pop(context);
+                                context.router.popForced(true);
                               },
                               color: Theme.of(context).colorScheme.surface,
                               child: MyText(
-                                text: 'Sign in',
+                                text: 'sign in',
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
@@ -351,10 +350,10 @@ class Register extends StatelessWidget {
 
   String? validateConfirmPassword(String? value) =>
       value == null || value.isEmpty
-          ? 'This field is required'
+          ? 'this field is required'.tr()
           : value.length < 6
-              ? 'Password must be longer than 6 characters'
+              ? 'password must be longer than 6 characters'.tr()
               : _password.text != _confirmPassword.text
-                  ? 'Passwords do not match'
+                  ? 'passwords do not match'.tr()
                   : null;
 }

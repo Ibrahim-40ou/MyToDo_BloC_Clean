@@ -1,18 +1,18 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mytodo_bloc/presentation/bloc/auth/auth_bloc.dart';
-import 'package:mytodo_bloc/presentation/pages/auth/register.dart';
 import 'package:mytodo_bloc/presentation/widgets/button.dart';
 import 'package:mytodo_bloc/presentation/widgets/loading_indicator.dart';
-import 'package:sizer/sizer.dart';
-
+import 'package:mytodo_bloc/core/sizeConfig.dart';
+import 'package:mytodo_bloc/core/routes.dart';
 import '../../../core/common_functions.dart';
 import '../../widgets/text.dart';
 import '../../widgets/text_field.dart';
-import '../app/app.dart';
-import 'forgot_password.dart';
 
+@RoutePage()
 class SignIn extends StatelessWidget {
   SignIn({super.key});
 
@@ -36,16 +36,11 @@ class SignIn extends StatelessWidget {
           );
         }
         if (state is SignInSuccess || state is GoogleSignInSuccess) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => App(),
-            ),
-            (route) => false,
-          );
+          context.router.push(const InitialRoute());
         }
       },
       builder: (context, state) {
+        bool isArabic = Localizations.localeOf(context).toString() == 'en_US' ? false : true;
         bool showPassword = true;
         if (state is SignInShowPasswordToggled) {
           showPassword = state.showPassword;
@@ -54,7 +49,7 @@ class SignIn extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
             body: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Form(
                 key: _key,
                 child: SingleChildScrollView(
@@ -71,15 +66,23 @@ class SignIn extends StatelessWidget {
                           SvgPicture.asset('assets/logo.svg'),
                           const SizedBox(width: 16),
                           MyText(
-                            text: 'My',
+                            text: isArabic ? 'ToDo' : 'My',
                             size: 26,
                             weight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: isArabic
+                                ? Theme.of(context).textTheme.bodyMedium!.color!
+                                : Theme.of(context).colorScheme.primary,
                           ),
-                          const MyText(
-                            text: 'ToDo',
+                          MyText(
+                            text: isArabic ? 'My' : 'ToDo',
                             size: 26,
                             weight: FontWeight.w600,
+                            color: isArabic
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .color!,
                           ),
                         ],
                       ),
@@ -93,20 +96,20 @@ class SignIn extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const MyText(
-                                text: 'Welcome back to',
+                                text: 'welcome back to',
                                 size: 24,
                                 weight: FontWeight.w600,
                                 overflow: TextOverflow.visible,
                               ),
                               MyText(
-                                text: ' My',
+                                text: ' my',
                                 size: 24,
                                 weight: FontWeight.w600,
                                 color: Theme.of(context).colorScheme.primary,
                                 overflow: TextOverflow.visible,
                               ),
                               const MyText(
-                                text: 'ToDo',
+                                text: 'todo',
                                 size: 24,
                                 weight: FontWeight.w600,
                                 overflow: TextOverflow.visible,
@@ -115,7 +118,7 @@ class SignIn extends StatelessWidget {
                           ),
                           MyText(
                             text:
-                                'Enter your email address and password to continue and use the app.',
+                                'enter your email address and password to continue and use the app.',
                             size: 14,
                             color: isDarkMode
                                 ? Theme.of(context).textTheme.bodyMedium?.color
@@ -130,7 +133,7 @@ class SignIn extends StatelessWidget {
                       const SizedBox(height: 32),
                       MyField(
                         controller: _email,
-                        labelText: 'Email',
+                        labelText: 'email'.tr(),
                         prefixIcon: SvgPicture.asset(
                           'assets/email.svg',
                           fit: BoxFit.scaleDown,
@@ -146,7 +149,7 @@ class SignIn extends StatelessWidget {
                       const SizedBox(height: 16),
                       MyField(
                         controller: _password,
-                        labelText: 'Password',
+                        labelText: 'password'.tr(),
                         isLast: true,
                         isPassword: true,
                         showPassword: showPassword,
@@ -188,16 +191,11 @@ class SignIn extends StatelessWidget {
                         width: 40.w,
                         height: 40,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ForgotPassword(),
-                            ),
-                          );
+                          context.router.push(ForgotPassword());
                         },
                         color: Theme.of(context).colorScheme.surface,
                         child: const MyText(
-                          text: 'Forgot Password?',
+                          text: 'forgot password',
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -237,7 +235,7 @@ class SignIn extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             const MyText(
-                              text: 'Sign in',
+                              text: 'sign in',
                               color: Colors.white,
                             ),
                           ],
@@ -264,7 +262,7 @@ class SignIn extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             const MyText(
-                              text: 'Sign in with Google',
+                              text: 'sign in with google',
                             ),
                           ],
                         ),
@@ -275,23 +273,18 @@ class SignIn extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const MyText(
-                            text: "Don't have an account?",
+                            text: "don't have an account",
                             size: 16,
                             weight: FontWeight.normal,
                           ),
                           MyButton(
                             height: 3.h,
                             function: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Register(),
-                                ),
-                              );
+                              context.router.push(Register());
                             },
                             color: Theme.of(context).colorScheme.surface,
                             child: MyText(
-                              text: 'Register',
+                              text: 'register',
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),

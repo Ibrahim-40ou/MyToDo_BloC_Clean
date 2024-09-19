@@ -1,4 +1,5 @@
-import 'package:email_validator/email_validator.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mytodo_bloc/presentation/widgets/button.dart';
 
@@ -6,15 +7,30 @@ import '../presentation/widgets/text.dart';
 
 class Common {
   String? validateField(String? value) =>
-      value == null || value.isEmpty ? 'This field is required' : null;
+      value == null || value.isEmpty ? 'this field is required'.tr() : null;
 
-  String? validateEmail(String? email) =>
-      EmailValidator.validate(email!.trim()) ? null : 'Enter a valid email';
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'this field is required'.tr();
+    }
+
+    final RegExp emailRegExp = RegExp(
+      r'^[^@]+@[^@]+\.[^@]+$',
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    if (!emailRegExp.hasMatch(value)) {
+      return 'please enter a valid email address'.tr();
+    }
+
+    return null;
+  }
 
   String? validatePassword(String? value) => value == null || value.isEmpty
-      ? 'This field is required'
+      ? 'this field is required'.tr()
       : value.length < 6
-          ? 'Password must be longer than 6 characters'
+          ? 'password must be longer than 6 characters'.tr()
           : null;
 
   void showSnackBar(BuildContext context, String text) {
@@ -65,14 +81,13 @@ class Common {
       builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: () async {
-            Navigator.pop(context);
-            exitDialogue();
+            context.router.popForced(true);
             return true;
           },
           child: AlertDialog(
             backgroundColor: Colors.white,
             title: MyText(
-              text: errorText.isNotEmpty ? 'Error Occurred' : 'Confirmation',
+              text: errorText.isNotEmpty ? 'error occurred' : 'confirmation',
               color: errorText.isNotEmpty
                   ? Theme.of(context).colorScheme.error
                   : Theme.of(context).colorScheme.primary,
@@ -84,12 +99,12 @@ class Common {
             actions: <Widget>[
               MyButton(
                 function: () {
-                  Navigator.pop(context);
+                  context.router.popForced(true);
                   confirmFunction();
                 },
                 color: Theme.of(context).colorScheme.primary,
                 child: MyText(
-                  text: errorText.isNotEmpty ? 'Okay' : 'Confirm',
+                  text: errorText.isNotEmpty ? 'okay' : 'confirm',
                   color: Colors.white,
                 ),
               ),
@@ -99,12 +114,12 @@ class Common {
                       border: true,
                       borderColor: Colors.black,
                       function: () {
-                        Navigator.pop(context);
+                        context.router.popForced(true);
                         exitDialogue();
                       },
                       color: Colors.white,
                       child: const MyText(
-                        text: 'Cancel',
+                        text: 'cancel',
                         color: Colors.black,
                       ),
                     ),

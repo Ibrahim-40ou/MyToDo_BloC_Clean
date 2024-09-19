@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:mytodo_bloc/core/common_functions.dart';
 import 'package:mytodo_bloc/presentation/bloc/app/app_bloc.dart';
 import 'package:mytodo_bloc/presentation/widgets/app_bar.dart';
@@ -11,14 +12,15 @@ import 'package:mytodo_bloc/presentation/widgets/loading_indicator.dart';
 
 import '../../widgets/text.dart';
 
-class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+@RoutePage()
+class AddATask extends StatefulWidget {
+  const AddATask({super.key});
 
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  State<AddATask> createState() => _AddATaskState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
+class _AddATaskState extends State<AddATask> {
   final TextEditingController _title = TextEditingController();
 
   final TextEditingController _body = TextEditingController();
@@ -36,7 +38,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         if (state is CheckTitleAndDateTimeState) {
           Common().showDialogue(
             context,
-            'Make sure you have added the title and time to the task.',
+            'make sure you have added the title and time to the task.',
             '',
             () {},
             () {},
@@ -46,15 +48,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
           Common().showDialogue(
             context,
             '',
-            'All data entered will be lost. Are you sure?',
+            'all data entered will be lost. are you sure?',
             () {},
             () {
-              Navigator.pop(context);
+              context.router.popForced(true);
             },
           );
         }
         if (state is AddTaskSuccess) {
-          Navigator.pop(context);
+          context.router.popForced(true);
         }
       },
       builder: (context, state) {
@@ -72,7 +74,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           child: SafeArea(
             child: Scaffold(
               appBar: MyAppBar(
-                title: 'Add Task',
+                title: 'add task'.tr(),
                 leadingExists: true,
                 leadingFunction: () {
                   context.read<AppBloc>().add(AppBackPressed());
@@ -97,7 +99,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           maxLines: 3,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Title',
+                            hintText: 'title'.tr(),
                             hintStyle: GoogleFonts.cairo(
                               color: isDarkMode
                                   ? Theme.of(context)
@@ -215,7 +217,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       maxLines: null,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Description',
+                        hintText: 'description'.tr(),
                         hintStyle: GoogleFonts.cairo(
                           color: isDarkMode
                               ? Theme.of(context).textTheme.labelMedium!.color
@@ -231,7 +233,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   context.read<AppBloc>().add(
-                        AddTask(
+                        AddTaskEvent(
                           title: _title.text,
                           body: _body.text,
                           prioritized: _isPrioritized,

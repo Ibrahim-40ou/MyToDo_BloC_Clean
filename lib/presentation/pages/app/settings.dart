@@ -1,18 +1,20 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mytodo_bloc/core/common_functions.dart';
+import 'package:mytodo_bloc/core/routes.dart';
 import 'package:mytodo_bloc/presentation/bloc/app/app_bloc.dart';
-import 'package:mytodo_bloc/presentation/pages/app/view_tasks.dart';
-import 'package:mytodo_bloc/presentation/pages/auth/sign_in.dart';
 import 'package:mytodo_bloc/presentation/widgets/app_bar.dart';
 import 'package:mytodo_bloc/presentation/widgets/button.dart';
 import 'package:mytodo_bloc/presentation/widgets/loading_indicator.dart';
 import 'package:mytodo_bloc/presentation/widgets/settings_card.dart';
 import 'package:mytodo_bloc/presentation/widgets/text.dart';
-import 'package:sizer/sizer.dart';
+import 'package:mytodo_bloc/core/sizeConfig.dart';
 
+// @RoutePage()
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
@@ -20,6 +22,9 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDarkMode =
         Theme.of(context).brightness == Brightness.dark ? true : false;
+    bool isArabic =
+        Localizations.localeOf(context).toString() == 'en_US' ? false : true;
+
     return BlocConsumer<AppBloc, AppState>(
       listener: (context, state) {
         if (state is SignOutLoading) {
@@ -50,21 +55,15 @@ class Settings extends StatelessWidget {
           );
         }
         if (state is SignOutSuccess) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SignIn(),
-            ),
-            (Route<dynamic> route) => false,
-          );
+          context.router.replaceAll([SignIn()]);
         }
       },
       builder: (context, state) {
         return SafeArea(
           child: Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: const MyAppBar(
-              title: 'Settings',
+            appBar: MyAppBar(
+              title: 'settings'.tr(),
               leadingExists: false,
             ),
             body: Padding(
@@ -75,8 +74,8 @@ class Settings extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SettingsCard(
-                        label: 'Theme',
-                        text: 'Light',
+                        label: 'theme',
+                        text: 'light',
                         icon: SvgPicture.asset(
                           isDarkMode
                               ? 'assets/light.svg'
@@ -85,9 +84,11 @@ class Settings extends StatelessWidget {
                           width: 24,
                         ),
                         function: () {
-                          context
-                              .read<AppBloc>()
-                              .add(ChangeTheme(isDarkMode: false));
+                          context.read<AppBloc>().add(
+                                ChangeTheme(
+                                  isDarkMode: false,
+                                ),
+                              );
                         },
                         buttonColor: isDarkMode
                             ? Theme.of(context).colorScheme.surface
@@ -97,8 +98,8 @@ class Settings extends StatelessWidget {
                             : Colors.white,
                       ),
                       SettingsCard(
-                        label: 'Theme',
-                        text: 'Dark',
+                        label: 'theme',
+                        text: 'dark',
                         icon: SvgPicture.asset(
                           isDarkMode
                               ? 'assets/darkFilled.svg'
@@ -107,14 +108,76 @@ class Settings extends StatelessWidget {
                           width: 24,
                         ),
                         function: () {
-                          context
-                              .read<AppBloc>()
-                              .add(ChangeTheme(isDarkMode: true));
+                          context.read<AppBloc>().add(
+                                ChangeTheme(
+                                  isDarkMode: true,
+                                ),
+                              );
                         },
                         buttonColor: isDarkMode
                             ? Theme.of(context).colorScheme.primary
                             : Theme.of(context).colorScheme.surface,
                         textsColor: isDarkMode
+                            ? Colors.white
+                            : Theme.of(context).textTheme.bodyMedium!.color!,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SettingsCard(
+                        label: 'Language',
+                        text: 'English',
+                        icon: Icon(
+                          Icons.language,
+                          size: 24,
+                          color: !isArabic
+                              ? Colors.white
+                              : isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                        ),
+                        function: () {
+                          context.read<AppBloc>().add(
+                                ChangeLanguage(
+                                  context: context,
+                                  isArabic: false,
+                                ),
+                              );
+                        },
+                        buttonColor: !isArabic
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.surface,
+                        textsColor: !isArabic
+                            ? Colors.white
+                            : Theme.of(context).textTheme.bodyMedium!.color!,
+                      ),
+                      SettingsCard(
+                        label: 'اللغة',
+                        text: 'العربية',
+                        icon: Icon(
+                          Icons.language,
+                          size: 24,
+                          color: isArabic
+                              ? Colors.white
+                              : isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                        ),
+                        function: () {
+                          context.read<AppBloc>().add(
+                                ChangeLanguage(
+                                  context: context,
+                                  isArabic: true,
+                                ),
+                              );
+                        },
+                        buttonColor: isArabic
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.surface,
+                        textsColor: isArabic
                             ? Colors.white
                             : Theme.of(context).textTheme.bodyMedium!.color!,
                       ),
@@ -126,42 +189,30 @@ class Settings extends StatelessWidget {
                   MyButton(
                     width: 100.w,
                     function: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const ViewTasks(page: 'completed'),
-                        ),
-                      );
+                      context.router.push(ViewTasks(page: 'completed'));
                     },
                     color: Theme.of(context).colorScheme.surface,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        SizedBox(
-                          width: 38.5.w,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              SvgPicture.asset(
-                                'assets/completed.svg',
-                                height: 22,
-                                width: 22,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .color!,
-                                  BlendMode.srcIn,
-                                ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              'assets/completed.svg',
+                              height: 22,
+                              width: 22,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).textTheme.bodyMedium!.color!,
+                                BlendMode.srcIn,
                               ),
-                              const SizedBox(width: 8),
-                              const MyText(text: 'Completed Tasks'),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            const MyText(text: 'completed tasks'),
+                          ],
                         ),
                         Icon(
-                          CupertinoIcons.arrow_right,
+                          CupertinoIcons.forward,
                           size: 24,
                           color: Theme.of(context).textTheme.bodyMedium!.color!,
                         ),
@@ -171,42 +222,30 @@ class Settings extends StatelessWidget {
                   MyButton(
                     width: 100.w,
                     function: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const ViewTasks(page: 'deleted'),
-                        ),
-                      );
+                      context.router.push(ViewTasks(page: 'deleted'));
                     },
                     color: Theme.of(context).colorScheme.surface,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        SizedBox(
-                          width: 34.w,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              SvgPicture.asset(
-                                'assets/delete.svg',
-                                height: 28,
-                                width: 28,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .color!,
-                                  BlendMode.srcIn,
-                                ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              'assets/delete.svg',
+                              height: 28,
+                              width: 28,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).textTheme.bodyMedium!.color!,
+                                BlendMode.srcIn,
                               ),
-                              const SizedBox(width: 8),
-                              const MyText(text: 'Deleted Tasks'),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            const MyText(text: 'deleted tasks'),
+                          ],
                         ),
                         Icon(
-                          CupertinoIcons.arrow_right,
+                          CupertinoIcons.forward,
                           size: 24,
                           color: Theme.of(context).textTheme.bodyMedium!.color!,
                         ),
@@ -222,30 +261,24 @@ class Settings extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        SizedBox(
-                          width: 24.5.w,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              SvgPicture.asset(
-                                'assets/signOut.svg',
-                                height: 22,
-                                width: 22,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .color!,
-                                  BlendMode.srcIn,
-                                ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              'assets/signOut.svg',
+                              height: 22,
+                              width: 22,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).textTheme.bodyMedium!.color!,
+                                BlendMode.srcIn,
                               ),
-                              const SizedBox(width: 8),
-                              const MyText(text: 'Sign Out'),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            const MyText(text: 'sign out'),
+                          ],
                         ),
                         Icon(
-                          CupertinoIcons.arrow_right,
+                          CupertinoIcons.forward,
                           size: 24,
                           color: Theme.of(context).textTheme.bodyMedium!.color!,
                         ),
